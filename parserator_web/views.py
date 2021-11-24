@@ -24,7 +24,7 @@ class AddressParse(APIView):
         try:
             tagged_address, address_type = self.parse(input_string)
         # Handle RepeatedLabelError
-        except usaddress.RepeatedLabelError as e:
+        except usaddress.RepeatedLabelError:
             timestamp = str(datetime.now())
             status = 500
             response_data = {
@@ -33,12 +33,13 @@ class AddressParse(APIView):
                     'timestamp': timestamp,
                     'input_string': input_string,
                     'title': 'Invalid input string',
-                    'detail': 'The address could not be parsed because of a repeated label.',
+                    'detail': 'The address could not be \
+                        parsed because of a repeated label.',
                     'path': '/api/parse'
                 }
             }
         # Handle all other errors
-        except:
+        except Exception:
             timestamp = str(datetime.now())
             status = 500
             response_data = {
@@ -66,7 +67,8 @@ class AddressParse(APIView):
     def parse(self, address):
         '''
         Use the usaddress module to parse a given address.
-        Returns a tuple containing the type (string) and components (OrderedDict) of the address.
+        Returns a tuple containing the type (string) and
+        components (OrderedDict) of the address.
         '''
 
         address_components, address_type = usaddress.tag(address)
