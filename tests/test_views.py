@@ -1,4 +1,4 @@
-# import pytest
+import pytest  # noqa: F401
 
 
 def test_api_parse_succeeds(client):
@@ -9,11 +9,9 @@ def test_api_parse_succeeds(client):
 
     address_string = '123 main st chicago il'
 
-    # TODO: Make this work!! #
-    response = client.get('api/parse/', {'address': address_string})
+    response = client.get('/api/parse/', {'address': address_string})
 
-    print(response)
-
+    assert response.status_code == 200
     assert response.data == {
         'status': 200,
         'input_string': address_string,
@@ -30,19 +28,21 @@ def test_api_parse_succeeds(client):
 
 def test_api_parse_raises_error(client):
     '''
-    Test that the API sends an error response when parsing an address
-    with repeated labels, and that the correct data is included.
+    Test that the API sends a correct response when parsing an address
+    with repeated labels, and that the correct error info is included.
     '''
 
     address_string = '123 main st chicago il 123 main st'
 
-    response = client.get('api/parse/', {'address': address_string})
+    response = client.get('/api/parse/', {'address': address_string})
 
-    print(client)
+    data, error = response.data, response.data['error']
 
-    assert response.data['status'] == 500
-    assert type(response.data['error']['timestamp']) == 'str'
-    assert response.data['error']['title'] == 'Invalid input string'
-    assert response.data['error']['detail'] \
+    assert response.status_code == 200 and data['status'] == 200
+    # Is there a better way to test timestamp format? Is it necessary?
+    assert type(error['timestamp']) == str
+    assert error['input_string'] == address_string
+    assert error['title'] == 'Invalid input string'
+    assert error['detail'] \
         == 'The address could not be parsed because of a repeated label.'
-    assert response.data['error']['path'] == '/api/parse'
+    assert error['path'] == '/api/parse'

@@ -15,7 +15,7 @@ class AddressParse(APIView):
 
     def get(self, request):
         '''
-        Handle GET requests to this endpoint.
+        Handle GET requests to the /api/parse endpoint.
         '''
 
         input_string = request.query_params.get('address')
@@ -26,20 +26,22 @@ class AddressParse(APIView):
         # Handle RepeatedLabelError
         except usaddress.RepeatedLabelError:
             timestamp = str(datetime.now())
-            status = 500
+            status = 200
             response_data = {
                 'status': status,
                 'error': {
                     'timestamp': timestamp,
                     'input_string': input_string,
                     'title': 'Invalid input string',
-                    'detail': 'The address could not be \
-                        parsed because of a repeated label.',
+                    'detail':
+                        'The address could not be parsed because of a repeated label.',
                     'path': '/api/parse'
                 }
             }
         # Handle all other errors
         except Exception:
+            # (Use "except Exception" rather than bare "except" to avoid catching
+            # KeyboardInterrupt and other system errors)
             timestamp = str(datetime.now())
             status = 500
             response_data = {
