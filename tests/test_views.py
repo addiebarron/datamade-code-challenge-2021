@@ -1,6 +1,3 @@
-import pytest  # noqa: F401
-
-
 def test_api_parse_succeeds(client):
     '''
     Test that the API parses a valid address string successfully and
@@ -39,8 +36,6 @@ def test_api_parse_raises_error(client):
     data, error = response.data, response.data['error']
 
     assert response.status_code == 200 and data['status'] == 200
-    # Is there a better way to test timestamp format? Is it necessary?
-    assert type(error['timestamp']) == str
     assert error['input_string'] == address_string
     assert error['title'] == 'Invalid input string'
     assert error['detail'] \
