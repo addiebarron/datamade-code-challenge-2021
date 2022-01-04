@@ -10,6 +10,9 @@ module.exports = {
     "semi": ["error", "never"],
     "space-in-parens": ["error", "never"],
     "space-before-function-paren": ["error", "always"],
-    "space-before-blocks": ["error", "always"]
-  }
+    "space-before-blocks": ["error", "always"],
+  },
+  parserOptions: {
+    ecmaVersion: "2017",
+  },
 }
